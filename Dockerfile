@@ -12,7 +12,8 @@ RUN            DEBIAN_FRONTEND=noninteractive && apt-get update && apt-get insta
                     gnupg \
                     python \
                     libc6-i386 \
-                    language-pack-en-base
+                    language-pack-en-base \
+                    git-core
 WORKDIR        /tmp
 RUN            wget -nv http://buildroot.uclibc.org/downloads/buildroot-$BR_VERSION.tar.gz
 RUN            tar -zxf buildroot-$BR_VERSION.tar.gz && mv buildroot-$BR_VERSION buildroot
