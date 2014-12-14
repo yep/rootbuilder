@@ -9,7 +9,7 @@ NGINX_SITE = http://nginx.org/download
 NGINX_LICENSE = BSD-2c
 NGINX_LICENSE_FILES = LICENSE
 
-NGINX_CONF_OPT = \
+NGINX_CONF_OPTS = \
 	--crossbuild=Linux::$(BR2_ARCH) \
 	--with-cc="$(TARGET_CC)" \
 	--with-cpp="$(TARGET_CC)" \
@@ -44,7 +44,7 @@ NGINX_CONF_ENV += \
 	ngx_force_have_sysvshm=yes \
 	ngx_force_have_posix_sem=yes
 
-NGINX_CONF_OPT += \
+NGINX_CONF_OPTS += \
 	--prefix=/etc/nginx \
 	--conf-path=/etc/nginx/nginx.conf \
 	--sbin-path=/usr/bin/nginx \
@@ -60,15 +60,15 @@ NGINX_CONF_OPT += \
 	--http-scgi-temp-path=/var/lib/nginx/scgi \
 	--http-uwsgi-temp-path=/var/lib/nginx/uwsgi
 
-NGINX_CONF_OPT += \
+NGINX_CONF_OPTS += \
 	$(if $(BR2_PACKAGE_NGINX_FILE_AIO),--with-file-aio) \
 	$(if $(BR2_INET_IPV6),--with-ipv6)
 
 ifeq ($(BR2_PACKAGE_PCRE),y)
 NGINX_DEPENDENCIES += pcre
-NGINX_CONF_OPT += --with-pcre
+NGINX_CONF_OPTS += --with-pcre
 else
-NGINX_CONF_OPT += --without-pcre
+NGINX_CONF_OPTS += --without-pcre
 endif
 
 # modules disabled or not activated because of missing dependencies:
@@ -78,13 +78,13 @@ endif
 # - pcre-jit          (want to rebuild pcre)
 
 # misc. modules
-NGINX_CONF_OPT += \
+NGINX_CONF_OPTS += \
 	$(if $(BR2_PACKAGE_NGINX_rtsig_module),--with-rtsig_module) \
 	$(if $(BR2_PACKAGE_NGINX_select_module),--with-select_module,--without-select_module) \
 	$(if $(BR2_PACKAGE_NGINX_poll_module),--with-poll_module,--without-poll_module)
 
 ifneq ($(BR2_PACKAGE_NGINX_add_modules),)
-NGINX_CONF_OPT += \
+NGINX_CONF_OPTS += \
 	$(addprefix --add-module=,$(call qstrip,$(BR2_PACKAGE_NGINX_add_modules)))
 endif
 
@@ -93,54 +93,54 @@ ifeq ($(BR2_PACKAGE_NGINX_HTTP),y)
 ifeq ($BR2_PACKAGE_NGINX_http_cache),y)
 NGINX_DEPENDENCIES += openssl
 else
-NGINX_CONF_OPT += --without-http-cache
+NGINX_CONF_OPTS += --without-http-cache
 endif
 
 ifeq ($(BR2_PACKAGE_OPENSSL),y)
 NGINX_DEPENDENCIES += openssl
-NGINX_CONF_OPT += --with-http_ssl_module
+NGINX_CONF_OPTS += --with-http_ssl_module
 endif
 
 ifeq ($(BR2_PACKAGE_NGINX_http_xslt_module),y)
 NGINX_DEPENDENCIES += libxml2 libxslt
-NGINX_CONF_OPT += --with-http_xslt_module
+NGINX_CONF_OPTS += --with-http_xslt_module
 NGINX_CONF_ENV += \
 	ngx_feature_path_libxslt=$(STAGING_DIR)/usr/include/libxml2
 endif
 
 ifeq ($(BR2_PACKAGE_NGINX_http_image_filter_module),y)
 NGINX_DEPENDENCIES += gd jpeg libpng
-NGINX_CONF_OPT += --with-http_image_filter_module
+NGINX_CONF_OPTS += --with-http_image_filter_module
 endif
 
 ifeq ($(BR2_PACKAGE_NGINX_http_gunzip_module),y)
 NGINX_DEPENDENCIES += zlib
-NGINX_CONF_OPT += --with-http_gunzip_module
+NGINX_CONF_OPTS += --with-http_gunzip_module
 endif
 
 ifeq ($(BR2_PACKAGE_NGINX_http_gzip_static_module),y)
 NGINX_DEPENDENCIES += zlib
-NGINX_CONF_OPT += --with-http_gzip_static_module
+NGINX_CONF_OPTS += --with-http_gzip_static_module
 endif
 
 ifeq ($(BR2_PACKAGE_NGINX_http_secure_link_module),y)
 NGINX_DEPENDENCIES += openssl
-NGINX_CONF_OPT += --with-http_secure_link_module
+NGINX_CONF_OPTS += --with-http_secure_link_module
 endif
 
 ifeq ($(BR2_PACKAGE_NGINX_http_gzip_module),y)
 NGINX_DEPENDENCIES += zlib
 else
-NGINX_CONF_OPT += --without-http_gzip_module
+NGINX_CONF_OPTS += --without-http_gzip_module
 endif
 
 ifeq ($(BR2_PACKAGE_NGINX_http_rewrite_module),y)
 NGINX_DEPENDENCIES += pcre
 else
-NGINX_CONF_OPT += --without-http_rewrite_module
+NGINX_CONF_OPTS += --without-http_rewrite_module
 endif
 
-NGINX_CONF_OPT += \
+NGINX_CONF_OPTS += \
 	$(if $(BR2_PACKAGE_NGINX_http_spdy_module),--with-http_spdy_module) \
 	$(if $(BR2_PACKAGE_NGINX_http_realip_module),--with-http_realip_module) \
 	$(if $(BR2_PACKAGE_NGINX_http_addition_module),--with-http_addition_module) \
@@ -176,7 +176,7 @@ NGINX_CONF_OPT += \
 	$(if $(BR2_PACKAGE_NGINX_http_upstream_keepalive_module),,--without-http_upstream_keepalive_module)
 
 else # !BR2_PACKAGE_NGINX_HTTP
-NGINX_CONF_OPT += --without-http
+NGINX_CONF_OPTS += --without-http
 endif # BR2_PACKAGE_NGINX_HTTP
 
 # mail modules
@@ -184,10 +184,10 @@ ifeq ($BR2_PACKAGE_NGINX_MAIL),y)
 
 ifeq ($(BR2_PACKAGE_OPENSSL),y)
 NGINX_DEPENDENCIES += openssl
-NGINX_CONF_OPT += --with-mail_ssl_module
+NGINX_CONF_OPTS += --with-mail_ssl_module
 endif
 
-NGINX_CONF_OPT += \
+NGINX_CONF_OPTS += \
 	$(if $(BR2_PACKAGE_NGINX_mail_pop3_module),,--without-mail_pop3_module) \
 	$(if $(BR2_PACKAGE_NGINX_mail_imap_module),,--without-mail_imap_module) \
 	$(if $(BR2_PACKAGE_NGINX_mail_smtp_module),,--without-mail_smtp_module)
@@ -200,7 +200,7 @@ endef
 NGINX_PRE_CONFIGURE_HOOKS += NGINX_DISABLE_WERROR
 
 define NGINX_CONFIGURE_CMDS
-	cd $(@D) ; $(NGINX_CONF_ENV) ./configure $(NGINX_CONF_OPT)
+	cd $(@D) ; $(NGINX_CONF_ENV) ./configure $(NGINX_CONF_OPTS)
 endef
 
 define NGINX_BUILD_CMDS
