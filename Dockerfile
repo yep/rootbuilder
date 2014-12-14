@@ -1,7 +1,7 @@
 FROM           ubuntu:trusty
 MAINTAINER     Jeff Lindsay <progrium@gmail.com>
 
-ENV            BR_VERSION 2014.02
+ENV            BR_VERSION 2014.11
 RUN            DEBIAN_FRONTEND=noninteractive && apt-get update && apt-get install -y \
                     wget \
                     build-essential \
